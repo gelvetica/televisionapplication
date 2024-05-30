@@ -31,7 +31,7 @@ class Tokensniffer:
             browser = p.firefox.launch(headless=True)
             page = browser.new_page()
             page.on("request", self.onRequest)
-            page.goto(urllib.parse.urljoin(config["tv_url"] , "/tv/" + self.page + "/"))
+            page.goto(urllib.parse.urljoin(config["tv_url"], self.page + "/"))
             browser.close()
     def onRequest(self, request):
         streamregex = "/([^\_]*).m3u8"
@@ -44,7 +44,7 @@ class Tokensniffer:
 
 def listChannels():
     res = {}
-    channelListRegex = "<a class=\"list-group-item\" href=\"/tv/(.*)/\">(.*)</a>"
+    channelListRegex = "<a class=\"list-group-item\" href=\"(.*)/\">(.*)</a>"
     indexHTML = requests.get(config["tv_url"]).text
     for line in indexHTML.splitlines():
         search = re.search(channelListRegex, line)
@@ -88,10 +88,11 @@ streams = {}
 def fullm3u():
     m3u = "#EXTM3U"
     for i, value in channels.items():
-        m3u += "\n#EXTINF:-1 tvg-chno=\"%s\",%s\n%s/channel/%s" % (str(list(channels.keys()).index(i) + 1), i, config["visible_url"], value)
+        m3u += "\n#EXTINF:-1 tvg-chno=\"%s\",%s\n%s/channel%s" % (str(list(channels.keys()).index(i) + 1), i, config["visible_url"], value)
     return(m3u)
-@app.route("/channel/<channel>")
+@app.route("/channel/<path:channel>")
 def appchannel(channel):
+    channel = "/" + channel
     try:
         res = getStream(channel)
         return redirect(res)
