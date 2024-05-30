@@ -53,6 +53,26 @@ def listChannels():
         name = search.group(2)
         url = search.group(1)
         res[name.replace("&amp;", "&")] = url
+    # event processing
+    eventTypeRegex = "            <h3>(.*)</h3>"
+    eventListRegex = "                                            <a class=\"list-group-item\" href=\"(.*)/\">(.*)"
+    currentType = None
+    currentNum = 0
+    for line in indexHTML.splitlines():
+        search = re.search(eventTypeRegex, line)
+        if search == None:
+            search = re.search(eventListRegex, line)
+            if search == None:
+                continue
+            currentNum += 1
+            res[currentType + " Event " + str(currentNum)] = search.group(1)
+            continue
+        print(search.group(1))
+        currentType = search.group(1)
+        currentNum = 0
+
+
+
     return res
 
 def getStreamUrl(page):
@@ -78,6 +98,7 @@ def getStream(page):
     return streams[page][0]
 #token = Tokensniffer("fox-news-channel-live-stream")
 #token.refresh()
+events = {}
 channels = listChannels()
 streams = {}
 
