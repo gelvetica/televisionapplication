@@ -7,6 +7,8 @@ import yaml
 from flask import Flask
 from flask import redirect
 
+import time
+
 app = Flask(__name__)
 
 datadir = os.environ["DATADIR"]
@@ -33,8 +35,14 @@ class TokenSniffer:
         with sync_playwright() as p:
             browser = p.firefox.launch(headless=True)
             page = browser.new_page()
+            page.on("request", self.onRequest)
+            page.goto(urllib.parse.urljoin(config["tv_url"] , "/tv/" + self.page + "/"))
+            # Wait 10 seconds to ensure cloudflare challenge completes
+            time.sleep(10)
             page.on("request", self.on_request)
             page.goto(urllib.parse.urljoin(config["tv_url"], self.page + "/"))
+             # Wait 10 seconds to ensure cloudflare challenge completes
+            time.sleep(10)
             browser.close()
 
     def on_request(self, request):
@@ -90,10 +98,12 @@ def get_stream(page):
         raise KeyError()
     if page not in streams.keys():
         streams[page] = get_stream_url(page)
-    if streams[page] is None:
+    if streams[page] is None or streams[page] is []:
+        del streams[page]
         raise BlockedChannelError
     r3 = requests.get(streams[page][0])
     if r3.status_code != 200:
+        del streams[page]
         raise TokenError("Invalid or Expired token")
     for line in r3.text.splitlines():
         if line.startswith("#"):
@@ -124,10 +134,10 @@ def app_channel(channel):
         res = get_stream(channel)
         return redirect(res)
     except TokenError:
-        streams[channel] = get_stream_url(channel)
-        res = get_stream(channel)
+        res = getStream(channel)
         return redirect(res)
     except BlockedChannelError:
-        return "Channel is blocked", 403
+        return "Channel is blocked, or Cloudflare verification failed.", 403
+
     except KeyError:
         return "Channel does not exist", 404
