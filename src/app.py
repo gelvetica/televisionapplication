@@ -8,8 +8,10 @@ import yaml
 import time
 import datetime
 from flask import Flask
+from flask import request
 from flask import redirect
 from flask import render_template
+from flask import url_for
 
 import time
 
@@ -95,7 +97,8 @@ streams = {}
 def fullm3u():
     m3u = "#EXTM3U"
     for i, value in channels.items():
-        m3u += "\n#EXTINF:-1 tvg-chno=\"%s\",%s\n%s/channel/%s" % (str(list(channels.keys()).index(i) + 1), i, config["visible_url"], value)
+        m3u += ("\n#EXTINF:-1 tvg-chno=\"%s\",%s\n%s" %
+                (str(list(channels.keys()).index(i) + 1), i, url_for('appchannel', _external=True, channel=value)))
     return(m3u)
 @app.route("/channel/<channel>")
 def appchannel(channel):
@@ -112,4 +115,4 @@ def appchannel(channel):
 
 @app.route("/")
 def homepage():
-    return render_template('index.html', visible_url=config["visible_url"])
+    return render_template('index.html', m3u_url=url_for('fullm3u', _external=True))
