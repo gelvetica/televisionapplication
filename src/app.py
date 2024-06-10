@@ -9,6 +9,7 @@ import time
 import datetime
 from flask import Flask
 from flask import redirect
+from flask import render_template
 
 import time
 
@@ -108,3 +109,7 @@ def appchannel(channel):
         return ("Channel is blocked, or Cloudflare verification failed.", 403)
     except KeyError:
         return ("Channel does not exist", 404)
+
+@app.route("/")
+def homepage():
+    return render_template('index.html', visible_url=config["visible_url"])
