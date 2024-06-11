@@ -1,3 +1,6 @@
+**Please do not use GitHub issues for support inquires.
+If you need assistance, you may ask in the
+[Discord channel.](https://discord.gg/mc4WaSApvS)**
 # Television Application
 > Returns HLS stream links for thetvapp.to
 ## Usage
@@ -49,9 +52,6 @@ gunicorn -b 0.0.0.0:8000 --timeout 3000 -e DATADIR=/mydirectory/config.yml app:a
 Your config should be stored in your data directory, as `config.yml`
 
 **Example**
-
-`visible_url` is the url used in the m3u file returned by the server (ex: `visible_url: http://127.0.0.1:8000` returns `http://127.0.0.1:8000/channel/...`)
 ```
-visible_url: "http://127.0.0.1:5000"
 tv_url: "https://thetvapp.to"
 ```

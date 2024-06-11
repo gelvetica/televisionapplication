@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>television application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+</head>
+<body>
+    <div class="center">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="television application :3" id="logo">
+    </div>
+    <br>
+    <div class="main-text">
+    <h1>Usage</h1>
+    <p>You can access the channels by putting the<br>following playlist URL in your media player:</p>
+    <code>{{ m3u_url }}</code>
+    <h1>Support</h1>
+    <p>If something isn't working, you may ask for help in the <a href="https://discord.gg/mc4WaSApvS">Discord channel</a>.</p>
+    </div>
+</body>
+</html>

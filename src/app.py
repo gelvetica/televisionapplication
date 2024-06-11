@@ -5,7 +5,10 @@ import urllib.parse
 import os
 import yaml
 from flask import Flask
+from flask import request
 from flask import redirect
+from flask import render_template
+from flask import url_for
 
 import time
 
@@ -122,11 +125,11 @@ streams = {}
 def channels_m3u():
     m3u = "#EXTM3U"
     for i, value in channels.items():
-        m3u += "\n#EXTINF:-1 tvg-chno=\"%s\",%s\n%s/channel%s" % (
-            str(list(channels.keys()).index(i) + 1), i, config["visible_url"], value)
-    return m3u
+        m3u += ("\n#EXTINF:-1 tvg-chno=\"%s\",%s\n%s" %
+                (str(list(channels.keys()).index(i) + 1), i, url_for('appchannel', _external=True, channel=value)))
+    return(m3u)
 
-
+  
 @app.route("/channel/<path:channel>")
 def app_channel(channel):
     channel = "/" + channel
@@ -140,4 +143,9 @@ def app_channel(channel):
         return "Channel is blocked, or Cloudflare verification failed.", 403
 
     except KeyError:
-        return "Channel does not exist", 404
+        return ("Channel does not exist", 404)
+
+      
+@app.route("/")
+def homepage():
+    return render_template('index.html', m3u_url=url_for('fullm3u', _external=True))
