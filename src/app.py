@@ -1,4 +1,5 @@
 from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect
 import requests
 import re
 import urllib
@@ -37,8 +38,9 @@ class Tokensniffer:
             page = browser.new_page()
             page.on("request", self.onRequest)
             page.goto(urllib.parse.urljoin(config["tv_url"] , "/tv/" + self.page + "/"))
-            # Wait 10 seconds to ensure cloudflare challenge completes
-            time.sleep(10)
+            expect(page.locator("#loadVideoBtnTwo")).to_be_visible()
+            page.locator("#loadVideoBtnTwo").click()
+            expect(page.locator(".jw-state-playing")).to_be_visible()
             browser.close()
     def onRequest(self, request):
         streamregex = "/([^\_]*).m3u8"
@@ -92,7 +94,7 @@ streams = {}
 
 
 
-
+    
 @app.route("/channels.m3u")
 def fullm3u():
     m3u = "#EXTM3U"

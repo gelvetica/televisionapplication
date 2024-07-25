@@ -1,5 +1,5 @@
-Flask==3.0.2
-playwright==1.41.2
+Flask==3.0.3
+playwright==1.45.1
 PyYAML==6.0.1
-Requests==2.31.0
-gunicorn==21.2.0
+Requests==2.32.3
+gunicorn==22.0.0
