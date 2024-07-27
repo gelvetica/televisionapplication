@@ -38,9 +38,10 @@ class Tokensniffer:
             page = browser.new_page()
             page.on("request", self.onRequest)
             page.goto(urllib.parse.urljoin(config["tv_url"] , "/tv/" + self.page + "/"))
-            expect(page.locator("#loadVideoBtnTwo")).to_be_visible()
-            page.locator("#loadVideoBtnTwo").click()
-            expect(page.locator(".jw-state-playing")).to_be_visible()
+            # you guys are so lame
+            expect(page.locator("#loadVideoBtnOne")).to_be_enabled()
+            page.locator("#loadVideoBtnOne").click()
+            expect(page.locator(".jw-state-playing")).to_be_enabled()
             browser.close()
     def onRequest(self, request):
         streamregex = "/([^\_]*).m3u8"
@@ -118,3 +119,8 @@ def appchannel(channel):
 @app.route("/")
 def homepage():
     return render_template('index.html', m3u_url=url_for('fullm3u', _external=True))
+
+print("""
+:3 if something isnt working, please shoot a message to
+   the discord channel at https://discord.gg/mc4WaSApvS
+""")
