@@ -39,8 +39,8 @@ class Tokensniffer:
             page.on("request", self.onRequest)
             page.goto(urllib.parse.urljoin(config["tv_url"] , "/tv/" + self.page + "/"))
             # you guys are so lame
-            expect(page.locator("#loadVideoBtnOne")).to_be_enabled()
-            page.locator("#loadVideoBtnOne").click()
+            expect(page.locator(".col-lg-8")).to_be_enabled()
+            page.locator(".col-lg-8").click()
             expect(page.locator(".jw-state-playing")).to_be_enabled()
             browser.close()
     def onRequest(self, request):
