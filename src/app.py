@@ -38,13 +38,22 @@ class Tokensniffer:
             page = browser.new_page()
             page.on("request", self.onRequest)
             page.goto(urllib.parse.urljoin(config["tv_url"] , "/tv/" + self.page + "/"))
-            # you guys are so lame
+            # my thetvapp.to disstrack:
+            # thetvapp,
+            # you suck
+            # i rock
+            # you break my app
+            # i cry
+            # i fix it
+            # you break it again bc you actually suck i dont like you
+            # get off my github your site has Error Code: 102630
+            # please fix it im trying to telly
             expect(page.locator(".col-lg-8")).to_be_enabled()
             page.locator(".col-lg-8").click()
             expect(page.locator(".jw-state-playing")).to_be_enabled()
             browser.close()
     def onRequest(self, request):
-        streamregex = "/([^\_]*).m3u8"
+        streamregex = r"/[^_]*.m3u8\?"
         print(request.url)
         if re.search(streamregex, request.url) != None:
             self.token.append(request.url)
