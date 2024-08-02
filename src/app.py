@@ -13,6 +13,7 @@ from flask import request
 from flask import redirect
 from flask import render_template
 from flask import url_for
+from flask import send_from_directory
 
 import time
 
@@ -107,6 +108,9 @@ streams = {}
     
 @app.route("/channels.m3u")
 def fullm3u():
+    if "override_playlist" in config:
+        if config["override_playlist"] == True:
+            return send_from_directory(datadir, "channels.m3u")
     m3u = "#EXTM3U"
     for i, value in channels.items():
         m3u += ("\n#EXTINF:-1 tvg-chno=\"%s\",%s\n%s" %
@@ -128,6 +132,23 @@ def appchannel(channel):
 @app.route("/")
 def homepage():
     return render_template('index.html', m3u_url=url_for('fullm3u', _external=True))
+
+
+#@app.route("/buildm3u")
+#def wtf():
+#    m3u = "#EXTM3U"
+#    for name, link in channels.items():
+#        html = requests.get(urllib.parse.urljoin(config["tv_url"] , "/tv/" + link + "/")).text.splitlines()
+#        for line in html:
+#          search = re.search(r"<div id=\"get-m3u8-link\" data=\"/token/(.*)\"></div>", line)
+#            if search == None:
+#                continue
+#            m3u += ("\n#EXTINF:-1 tvg-chno=\"%s\",%s\n%s" %
+#                    (str(list(channels.keys()).index(name) + 1), name, "https://load.thetvapp.to/hls/" + search.group(1) + "/index.m3u8"))
+#    return m3u
+
+
+
 
 print("""
 :3 if something isnt working, please shoot a message to
