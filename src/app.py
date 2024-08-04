@@ -39,16 +39,6 @@ class Tokensniffer:
             page = browser.new_page()
             page.on("request", self.onRequest)
             page.goto(urllib.parse.urljoin(config["tv_url"] , "/tv/" + self.page + "/"))
-            # my thetvapp.to disstrack:
-            # thetvapp,
-            # you suck
-            # i rock
-            # you break my app
-            # i cry
-            # i fix it
-            # you break it again bc you actually suck i dont like you
-            # get off my github your site has Error Code: 102630
-            # please fix it im trying to telly
             expect(page.locator(".col-lg-8")).to_be_enabled()
             page.locator(".col-lg-8").click()
             expect(page.locator(".jw-state-playing")).to_be_enabled()
@@ -92,11 +82,10 @@ def getStream(page):
     if r3.status_code != 200:
         del streams[page]
         raise TokenError("Invalid or Expired token")
-    for line in r3.text.splitlines():
-        if line.startswith("#"):
-            continue
-        if "_high" in line:
-            return urllib.parse.urljoin(streams[page][0], line)
+    lines = r3.text.splitlines()
+    for idx, line in enumerate(lines):
+        if line.startswith("#") and "RESOLUTION=1280x720" in line:
+            return urllib.parse.urljoin(streams[page][0], lines[idx + 1])
     return streams[page][0]
 #token = Tokensniffer("fox-news-channel-live-stream")
 #token.refresh()
